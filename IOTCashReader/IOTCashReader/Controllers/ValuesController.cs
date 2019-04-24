@@ -34,7 +34,7 @@ namespace IOTCashReader.Controllers
             return "value";
         }
 
-        // POST api/addCoin
+        // POST api/values
         [HttpPost]
         public async Task<ActionResult> AddCoin([FromBody] Credit coin)
         {
