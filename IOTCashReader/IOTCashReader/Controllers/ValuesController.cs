@@ -22,9 +22,16 @@ namespace IOTCashReader.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public IEnumerable<Credit> GetCredit()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                return (_context.Credits.ToArray<Credit>()).ToArray<Credit>();
+            }
+            catch (Exception)
+            {
+                return new List<Credit>();
+            }
         }
 
         // GET api/values/5
