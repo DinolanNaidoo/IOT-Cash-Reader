@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IOTCashReader.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace IOTCashReader.Controllers
 {
@@ -10,6 +12,14 @@ namespace IOTCashReader.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private ModelsContext _context;
+        private IConfiguration _config;
+        public ValuesController(ModelsContext db, IConfiguration config)
+        {
+            _context = db;
+            _config = config;
+        }
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
@@ -24,10 +34,28 @@ namespace IOTCashReader.Controllers
             return "value";
         }
 
-        // POST api/values
+        // POST api/addCoin
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult> AddCoin([FromBody] Credit coin)
         {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _context.AddAsync(coin);
+                    _context.SaveChanges();
+
+                    return new OkObjectResult(coin);
+                }
+                catch (Exception e)
+                {
+                    return new BadRequestObjectResult(e.Message);
+                }
+            }
+            else
+            {
+                return new BadRequestObjectResult("coin entry cannot be null");
+            }
         }
 
         // PUT api/values/5
