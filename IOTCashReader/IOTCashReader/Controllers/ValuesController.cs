@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace IOTCashReader.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
@@ -31,6 +31,22 @@ namespace IOTCashReader.Controllers
             catch (Exception)
             {
                 return new List<Credit>();
+            }
+        }
+        [HttpGet]
+        public string AddCredit(double credit)
+        {
+            try
+            {
+                Credit creditObj = new Credit();
+                creditObj.CoinValue = credit;
+                _context.Credits.Add(creditObj);
+                _context.SaveChanges();
+                return "successfully added R"+credit;
+            }
+            catch (Exception e)
+            {
+               return "error : "+e.Message; 
             }
         }
 
