@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace IOTCashReader.Models
 {
-    public class Credit
+    public class Safe
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public double Value { get; set; }
-        public DateTime DateTime { get; set; }
+        public string  SerialNumber { get; set; }
+        public string SafeName { get; set; }
+        public virtual User User { get; set; }
     }
 }
