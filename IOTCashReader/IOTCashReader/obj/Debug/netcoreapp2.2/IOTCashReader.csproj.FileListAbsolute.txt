@@ -12,3 +12,17 @@ C:\Users\Dinolan Naidoo\Desktop\IOT Cash Reader\IOT-Cash-Reader\IOTCashReader\IO
 C:\Users\Dinolan Naidoo\Desktop\IOT Cash Reader\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.RazorTargetAssemblyInfo.cache
 C:\Users\Dinolan Naidoo\Desktop\IOT Cash Reader\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.dll
 C:\Users\Dinolan Naidoo\Desktop\IOT Cash Reader\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.pdb
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\bin\Debug\netcoreapp2.2\IOTCashReader.deps.json
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\bin\Debug\netcoreapp2.2\IOTCashReader.runtimeconfig.json
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\bin\Debug\netcoreapp2.2\IOTCashReader.runtimeconfig.dev.json
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\bin\Debug\netcoreapp2.2\IOTCashReader.dll
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\bin\Debug\netcoreapp2.2\IOTCashReader.pdb
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.csprojAssemblyReference.cache
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.csproj.CoreCompileInputs.cache
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.RazorAssemblyInfo.cache
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.RazorAssemblyInfo.cs
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.AssemblyInfoInputs.cache
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.AssemblyInfo.cs
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.RazorTargetAssemblyInfo.cache
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.dll
+C:\Users\Sibusiso Malatji\Source\Repos\IOT-Cash-Reader\IOTCashReader\IOTCashReader\obj\Debug\netcoreapp2.2\IOTCashReader.pdb
