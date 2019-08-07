@@ -19,5 +19,7 @@ namespace IOTCashReader.Models
         public virtual DbSet<Safe> Safe { get; set; }
         public virtual DbSet<SafeCredit> SafeCredit { get; set; }
         public virtual DbSet<Credit> Credits { get; set; }
+        public virtual DbSet<SafeWithdrawal> SafeWithdrawal { get; set; }
+        public virtual DbSet<Withdrawal> Withdrawal { get; set; }
     }
 }
