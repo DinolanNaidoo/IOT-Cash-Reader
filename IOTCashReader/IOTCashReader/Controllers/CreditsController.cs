@@ -146,7 +146,9 @@ namespace IOTCashReader.Controllers
                 _context.SafeCredit.Add(safeCredit);
                 await _context.SaveChangesAsync();
 
-                int balance = (int)GetSafeTotalCredit(serialnumber).Result.Value;
+                int withdrawals = (int)new WithdrawalsController(_context).GetSafeTotalWithdrawal(serialnumber).Result.Value;
+                int deposits = (int)GetSafeTotalCredit(serialnumber).Result.Value;
+                int balance = deposits - withdrawals;
                 return balance;
             }
             else
