@@ -125,7 +125,7 @@ namespace IOTCashReader.Controllers
         }
         // POST: api/Credits/AddCredit
         [HttpPost]
-        public async Task<ActionResult<Credit>> AddCredit(string serialnumber, [FromBody] Credit credit)
+        public async Task<ActionResult<int>> AddCredit(string serialnumber, [FromBody] Credit credit)
         {
             if (ModelState.IsValid && credit != null && serialnumber.Length > 0)
             {
@@ -146,7 +146,8 @@ namespace IOTCashReader.Controllers
                 _context.SafeCredit.Add(safeCredit);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetCredit", new { id = credit.Id }, credit);
+                int balance = (int)GetSafeTotalCredit(serialnumber).Result.Value;
+                return balance;
             }
             else
             {
