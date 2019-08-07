@@ -93,6 +93,15 @@ namespace IOTCashReader.Controllers
 
             return credit;
         }
+        // GET: api/Credits/GetSafeBalance?serialnumber=postmanTestSafe
+        [HttpGet]
+        public async Task<ActionResult<int>> GetSafeBalance(string serialnumber)
+        {
+            int withdrawals = (int)new WithdrawalsController(_context).GetSafeTotalWithdrawal(serialnumber).Result.Value;
+            int deposits = (int)GetSafeTotalCredit(serialnumber).Result.Value;
+            int balance = deposits - withdrawals;
+            return balance;
+        }
 
         // PUT: api/Credits/UpdateCredit
         [HttpPut("{id}")]
