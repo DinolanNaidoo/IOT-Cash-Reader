@@ -20,16 +20,16 @@ namespace IOTCashReader.Controllers
         {
             _context = context;
         }
-        
+
         [HttpGet]
         public async Task<ActionResult<bool>> Login(string username, string password)
         {
-            User user =  _context.User.Where(u => u.Username.Equals(username)).FirstOrDefault<User>();
-            if(user == null)
+            User user = _context.User.Where(u => u.Username.Equals(username)).FirstOrDefault<User>();
+            if (user == null)
             {
                 return NotFound("user not found");
             }
-            if (Security.CompareHashedData(user.Password, password)){
+            if (Security.CompareHashedData(user.Password, password)) {
                 return true;
             }
             else
@@ -51,7 +51,7 @@ namespace IOTCashReader.Controllers
 
         // POST: api/Users/AddUserSafe
         [HttpPost]
-        public async Task<ActionResult<User>> AddUserSafe(string username ,Safe safe)
+        public async Task<ActionResult<User>> AddUserSafe(string username, Safe safe)
         {
             if (ModelState.IsValid)
             {
@@ -71,7 +71,7 @@ namespace IOTCashReader.Controllers
                     _context.SaveChanges();
                     return Ok("Successfully added " + safe.SafeName + " to " + user.Username);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     return BadRequest(e.Message);
                 }
@@ -81,6 +81,39 @@ namespace IOTCashReader.Controllers
                 return BadRequest();
             }
         }
+        [HttpPost]
+        public async Task<ActionResult<Access>> CheckAccessCode([FromBody] AccessCode code)
+        {
+            Access access = new Access() {
+                Username = "N/A",
+                SafeSerial = "N/A",
+                Granted = false
+            };
+            if (code.Code != null || code.Code.Length >0)
+            {
+                //logic
+                User user = _context.User.Where(u => u.Code.Equals(code.Code)).FirstOrDefault<User>();
+                if(user != null)
+                {
+                    access.Username = user.Username;
+                    Safe safe = _context.Safe.Where(s => s.User.Username.Equals(user.Username)).FirstOrDefault<Safe>();
+                    if(safe != null)
+                    {
+                        access.SafeSerial = safe.SerialNumber;
+                    }
+                    if (!access.SafeSerial.Equals("N/A"))
+                    {
+                        access.Granted = true;
+                    }
+                }
+              return Ok(access);
+            }
+            else
+            {
+                return BadRequest(access);
+            }
+        }
+        
 
     }
 }
