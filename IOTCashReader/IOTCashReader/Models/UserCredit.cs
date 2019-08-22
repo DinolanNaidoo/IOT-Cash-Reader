@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace IOTCashReader.Models
 {
-    public class SafeWithdrawal
+    public class UserCredit
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public virtual Safe Safe { get; set; }
-        public virtual Withdrawal Withdrawal { get; set; }
+        public virtual User User { get; set; }
+        public virtual Credit Credit { get; set; }
     }
 }

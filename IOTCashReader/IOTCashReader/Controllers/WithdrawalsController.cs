@@ -28,18 +28,18 @@ namespace IOTCashReader.Controllers
         }
         // GET: api/Withdrawals/GetSafeWithdrawals?serialNumber=postmanTestSafe
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Withdrawal>>> GetSafeWithdrawals(string serialNumber)
+        public async Task<ActionResult<IEnumerable<Withdrawal>>> GetSafeWithdrawals(int UserId)
         {
-            if (serialNumber == null || serialNumber.Length == 0)
+            if (UserId == null || UserId <= 0)
             {
                 return NotFound();
             }
             try
             {
-                var creditsQuery = from Safe in _context.Safe
-                                   join SafeWithdrawal in _context.SafeWithdrawal on Safe.Id equals SafeWithdrawal.Safe.Id
-                                   join Withdrawal in _context.Withdrawal on SafeWithdrawal.Withdrawal.Id equals Withdrawal.Id
-                                   where (Safe.SerialNumber.ToUpper().Equals(serialNumber.ToUpper()))
+                var creditsQuery = from User in _context.User
+                                   join UserWithdrawal in _context.UserWithdrawal on User.Id equals UserWithdrawal.User.Id
+                                   join Withdrawal in _context.Withdrawal on UserWithdrawal.Withdrawal.Id equals Withdrawal.Id
+                                   where (UserId == UserWithdrawal.User.Id)
                                    select new
                                    {
                                        Withdrawal.Id,
@@ -65,13 +65,13 @@ namespace IOTCashReader.Controllers
             }
         }
         // GET: api/Withdrawals/GetSafeTotalWithdrawal?serialNumber=postmanTestSafe
-        public async Task<ActionResult<double>> GetSafeTotalWithdrawal(string serialNumber)
+        public async Task<ActionResult<double>> GetUserTotalWithdrawal(int UserId)
         {
-            if (serialNumber == null || serialNumber.Length == 0)
+            if ( UserId <= 0)
             {
-                return NotFound();
+                return NotFound("User not found");
             }
-            double total = GetSafeWithdrawals(serialNumber).Result.Value.ToList<Withdrawal>().Sum(s => s.Value);
+            double total = GetSafeWithdrawals(UserId).Result.Value.ToList<Withdrawal>().Sum(s => s.Value);
             return new ActionResult<double>(total);
         }
         // GET: api/Credits/GetWithdrawal?id=withdrawalId
@@ -120,29 +120,29 @@ namespace IOTCashReader.Controllers
 
         // POST: api/Withdrawals/MakeWithdrawal?serialnumber=serialnumber
         [HttpPost]
-        public async Task<ActionResult<int>> MakeWithdrawal(string serialnumber, [FromBody] Withdrawal withdrawal)
+        public async Task<ActionResult<int>> MakeWithdrawal(int UserId, [FromBody] Withdrawal withdrawal)
         {
-            if (ModelState.IsValid && withdrawal != null && serialnumber.Length > 0)
+            if (ModelState.IsValid && withdrawal != null && UserId >0 )
             {
-                Safe safe = _context.Safe.Where(s => s.SerialNumber.ToUpper().Equals(serialnumber.ToUpper())).FirstOrDefault<Safe>();
-                if (safe == null)
+                User user = _context.User.Where(u => u.Id == UserId).FirstOrDefault<User>();
+                if (user == null)
                 {
-                    return NotFound();
+                    return NotFound("User not found");
                 }
 
                 withdrawal.DateTime = DateTime.Now; // get current date and time;
 
-                SafeWithdrawal safeWithdrawal = new SafeWithdrawal()
+                UserWithdrawal userWithdrawal = new UserWithdrawal()
                 {
                     Withdrawal = withdrawal,
-                    Safe = safe
+                    User = user
                 };
                 _context.Withdrawal.Add(withdrawal);
-                _context.SafeWithdrawal.Add(safeWithdrawal);
+                _context.UserWithdrawal.Add(userWithdrawal);
                 await _context.SaveChangesAsync();
 
-                int deposits = (int)new CreditsController(_context).GetSafeTotalCredit(serialnumber).Result.Value;
-                int withdrawals = (int)GetSafeTotalWithdrawal(serialnumber).Result.Value;
+                int deposits = (int)new CreditsController(_context).GetUserTotalCredit(UserId).Result.Value;
+                int withdrawals = (int)GetUserTotalWithdrawal(UserId).Result.Value;
                 int balance = deposits - withdrawals;
                 return balance;
             }

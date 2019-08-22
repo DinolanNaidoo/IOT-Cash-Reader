@@ -8,8 +8,7 @@ namespace IOTCashReader.Lib
 {
     public class Access
     {
-        public string Username{ get; set; }
-        public string SafeSerial { get; set; }
+        public int UserId{ get; set; }
         public bool Granted { get; set; }
     }
 }
