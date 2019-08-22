@@ -85,8 +85,7 @@ namespace IOTCashReader.Controllers
         public async Task<ActionResult<Access>> CheckAccessCode([FromBody] AccessCode code)
         {
             Access access = new Access() {
-                Username = "N/A",
-                SafeSerial = "N/A",
+                UserId = 0,
                 Granted = false
             };
             if (code.Code != null || code.Code.Length >0)
@@ -95,16 +94,8 @@ namespace IOTCashReader.Controllers
                 User user = _context.User.Where(u => u.Code.Equals(code.Code)).FirstOrDefault<User>();
                 if(user != null)
                 {
-                    access.Username = user.Username;
-                    Safe safe = _context.Safe.Where(s => s.User.Username.Equals(user.Username)).FirstOrDefault<Safe>();
-                    if(safe != null)
-                    {
-                        access.SafeSerial = safe.SerialNumber;
-                    }
-                    if (!access.SafeSerial.Equals("N/A"))
-                    {
-                        access.Granted = true;
-                    }
+                    access.UserId = user.Id;
+                    access.Granted = true;
                 }
               return Ok(access);
             }

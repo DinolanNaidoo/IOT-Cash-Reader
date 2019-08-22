@@ -31,18 +31,18 @@ namespace IOTCashReader.Controllers
         // GET: api/Credits/GetSafeCredits?serialNumer=safeserialnumber
         //get all credits stored in the safe with the specified serial number
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Credit>>> GetSafeCredits(string serialNumber)
+        public async Task<ActionResult<IEnumerable<Credit>>> GetSafeCredits(int UserId)
         {
-            if (serialNumber == null || serialNumber.Length == 0)
+            if ( UserId <= 0)
             {
-                return NotFound();
+                return NotFound("User not found");
             }
             try
             {
-                var creditsQuery = from Safe in _context.Safe
-                                   join SafeCredit in _context.SafeCredit on Safe.Id equals SafeCredit.Safe.Id
-                                   join Credit in _context.Credits on SafeCredit.Credit.Id equals Credit.Id
-                                   where (Safe.SerialNumber.ToUpper().Equals(serialNumber.ToUpper()))
+                var creditsQuery = from User in _context.User
+                                   join UserCredit in _context.UserCredit on User.Id equals UserCredit.User.Id
+                                   join Credit in _context.Credits on UserCredit.Credit.Id equals Credit.Id
+                                   where (User.Id == UserId)
                                    select new
                                    {
                                        Credit.Id,
@@ -70,13 +70,13 @@ namespace IOTCashReader.Controllers
         //GET: api/Credits/GetSafeTotalCredit?serialNumer=safeserialnumber
         //get total credits stored in the safe with the specified serial number
         [HttpGet]
-        public async Task<ActionResult<double>> GetSafeTotalCredit(string serialNumber)
+        public async Task<ActionResult<double>> GetUserTotalCredit(int UserId)
         {
-            if (serialNumber == null || serialNumber.Length == 0)
+            if ( UserId <= 0)
             {
                 return NotFound();
             }
-            double total = GetSafeCredits(serialNumber).Result.Value.ToList<Credit>().Sum(s => s.Value);
+            double total = GetSafeCredits(UserId).Result.Value.ToList<Credit>().Sum(s => s.Value);
             return new ActionResult<double>(total);
         }
 
@@ -95,10 +95,10 @@ namespace IOTCashReader.Controllers
         }
         // GET: api/Credits/GetSafeBalance?serialnumber=postmanTestSafe
         [HttpGet]
-        public async Task<ActionResult<int>> GetSafeBalance(string serialnumber)
+        public async Task<ActionResult<int>> GetSafeBalance(int UserId)
         {
-            int withdrawals = (int)new WithdrawalsController(_context).GetSafeTotalWithdrawal(serialnumber).Result.Value;
-            int deposits = (int)GetSafeTotalCredit(serialnumber).Result.Value;
+            int withdrawals = (int)new WithdrawalsController(_context).GetUserTotalWithdrawal(UserId).Result.Value;
+            int deposits = (int)GetUserTotalCredit(UserId).Result.Value;
             int balance = deposits - withdrawals;
             return balance;
         }
@@ -134,29 +134,29 @@ namespace IOTCashReader.Controllers
         }
         // POST: api/Credits/AddCredit
         [HttpPost]
-        public async Task<ActionResult<int>> AddCredit(string serialnumber, [FromBody] Credit credit)
+        public async Task<ActionResult<int>> AddCredit(int UserId, [FromBody] Credit credit)
         {
-            if (ModelState.IsValid && credit != null && serialnumber.Length > 0)
+            if (ModelState.IsValid && credit != null && UserId > 0)
             {
-                Safe safe = _context.Safe.Where(s => s.SerialNumber.ToUpper().Equals(serialnumber.ToUpper())).FirstOrDefault<Safe>();
-                if(safe == null)
+                User user = _context.User.Where(u => u.Id == UserId).FirstOrDefault<User>();
+                if(user == null)
                 {
-                    return NotFound();
+                    return NotFound("User not foound");
                 }
 
                 credit.DateTime = DateTime.Now; // get current date and time;
 
-                SafeCredit safeCredit = new SafeCredit()
+                UserCredit userCredit = new UserCredit()
                 {
                     Credit = credit,
-                    Safe = safe
+                    User = user
                 };
                 _context.Credits.Add(credit);
-                _context.SafeCredit.Add(safeCredit);
+                _context.UserCredit.Add(userCredit);
                 await _context.SaveChangesAsync();
 
-                int withdrawals = (int)new WithdrawalsController(_context).GetSafeTotalWithdrawal(serialnumber).Result.Value;
-                int deposits = (int)GetSafeTotalCredit(serialnumber).Result.Value;
+                int withdrawals = (int)new WithdrawalsController(_context).GetUserTotalWithdrawal(UserId).Result.Value;
+                int deposits = (int)GetUserTotalCredit(UserId).Result.Value;
                 int balance = deposits - withdrawals;
                 return balance;
             }
