@@ -30,7 +30,7 @@ namespace IOTCashReader.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Withdrawal>>> GetSafeWithdrawals(int UserId)
         {
-            if (UserId == null || UserId <= 0)
+            if ( UserId <= 0)
             {
                 return NotFound();
             }
