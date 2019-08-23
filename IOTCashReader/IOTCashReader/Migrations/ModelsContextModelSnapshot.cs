@@ -57,44 +57,6 @@ namespace IOTCashReader.Migrations
                     b.ToTable("Safe");
                 });
 
-            modelBuilder.Entity("IOTCashReader.Models.SafeCredit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CreditId");
-
-                    b.Property<int?>("SafeId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreditId");
-
-                    b.HasIndex("SafeId");
-
-                    b.ToTable("SafeCredit");
-                });
-
-            modelBuilder.Entity("IOTCashReader.Models.SafeWithdrawal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("SafeId");
-
-                    b.Property<int?>("WithdrawalId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SafeId");
-
-                    b.HasIndex("WithdrawalId");
-
-                    b.ToTable("SafeWithdrawal");
-                });
-
             modelBuilder.Entity("IOTCashReader.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -114,6 +76,44 @@ namespace IOTCashReader.Migrations
                         .HasFilter("[Username] IS NOT NULL");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("IOTCashReader.Models.UserCredit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CreditId");
+
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreditId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserCredit");
+                });
+
+            modelBuilder.Entity("IOTCashReader.Models.UserWithdrawal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("UserId");
+
+                    b.Property<int?>("WithdrawalId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WithdrawalId");
+
+                    b.ToTable("UserWithdrawal");
                 });
 
             modelBuilder.Entity("IOTCashReader.Models.Withdrawal", b =>
@@ -138,22 +138,22 @@ namespace IOTCashReader.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("IOTCashReader.Models.SafeCredit", b =>
+            modelBuilder.Entity("IOTCashReader.Models.UserCredit", b =>
                 {
                     b.HasOne("IOTCashReader.Models.Credit", "Credit")
                         .WithMany()
                         .HasForeignKey("CreditId");
 
-                    b.HasOne("IOTCashReader.Models.Safe", "Safe")
+                    b.HasOne("IOTCashReader.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("SafeId");
+                        .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("IOTCashReader.Models.SafeWithdrawal", b =>
+            modelBuilder.Entity("IOTCashReader.Models.UserWithdrawal", b =>
                 {
-                    b.HasOne("IOTCashReader.Models.Safe", "Safe")
+                    b.HasOne("IOTCashReader.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("SafeId");
+                        .HasForeignKey("UserId");
 
                     b.HasOne("IOTCashReader.Models.Withdrawal", "Withdrawal")
                         .WithMany()
