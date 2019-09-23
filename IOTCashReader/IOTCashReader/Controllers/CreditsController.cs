@@ -134,12 +134,13 @@ namespace IOTCashReader.Controllers
         }
         // POST: api/Credits/AddCredit
         [HttpPost]
-        public async Task<ActionResult<int>> AddCredit(int UserId, [FromBody] Credit credit)
+        public async Task<ActionResult<int>> AddCredit(int UserId,[FromBody] Credit credit)
         {
-            if (ModelState.IsValid && credit != null && UserId > 0)
+            if (ModelState.IsValid && credit != null && UserId > 0 )
             {
                 User user = _context.User.Where(u => u.Id == UserId).FirstOrDefault<User>();
-                if(user == null)
+                Safe safe = _context.Safe.FirstOrDefault<Safe>();
+                if (user == null)
                 {
                     return NotFound("User not foound");
                 }
@@ -153,6 +154,17 @@ namespace IOTCashReader.Controllers
                 };
                 _context.Credits.Add(credit);
                 _context.UserCredit.Add(userCredit);
+
+                //update requestsTable
+                Request request = new Request()
+                {
+                    User = user,
+                    Type = "Deposit",
+                    isCompleted = true,
+                    Amount = credit.Value,
+                    Response = "Deposit successful"
+                };
+                _context.Request.Add(request);
                 await _context.SaveChangesAsync();
 
                 int withdrawals = (int)new WithdrawalsController(_context).GetUserTotalWithdrawal(UserId).Result.Value;

@@ -14,6 +14,10 @@ namespace IOTCashReader.Models
         public int Id { get; set; }
         public string  SerialNumber { get; set; }
         public string SafeName { get; set; }
-        public virtual User User { get; set; }
+        public int Bill100 { get; set; }
+        public int Bill50 { get; set; }
+        public int Bill20 { get; set; }
+        public int Bill10 { get; set; }
+        public bool AcceptorActive { get; set; }
     }
 }
