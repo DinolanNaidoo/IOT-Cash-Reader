@@ -120,16 +120,21 @@ namespace IOTCashReader.Controllers
 
         // POST: api/Withdrawals/MakeWithdrawal?serialnumber=serialnumber
         [HttpPost]
-        public async Task<ActionResult<int>> MakeWithdrawal(int UserId, [FromBody] Withdrawal withdrawal)
+        public async Task<ActionResult<string>> MakeWithdrawal(int reqId, [FromBody] Withdrawal withdrawal)
         {
-            if (ModelState.IsValid && withdrawal != null && UserId >0 )
+            if (ModelState.IsValid && withdrawal != null && reqId > 0 )
             {
-                User user = _context.User.Where(u => u.Id == UserId).FirstOrDefault<User>();
+                Request request = _context.Request.Where(r => r.Id == reqId).FirstOrDefault<Request>();
+                if(request == null)
+                {
+                    return NotFound("User not found");
+                }
+                User user = _context.User.Where(u => u.Id == request.Id).FirstOrDefault<User>();
                 if (user == null)
                 {
                     return NotFound("User not found");
                 }
-
+                
                 withdrawal.DateTime = DateTime.Now; // get current date and time;
 
                 UserWithdrawal userWithdrawal = new UserWithdrawal()
@@ -137,18 +142,21 @@ namespace IOTCashReader.Controllers
                     Withdrawal = withdrawal,
                     User = user
                 };
+                request.Response = "Withdrawal successful";
+                request.isCompleted = true;
+                _context.Request.Update(request);
                 _context.Withdrawal.Add(withdrawal);
                 _context.UserWithdrawal.Add(userWithdrawal);
                 await _context.SaveChangesAsync();
 
-                int deposits = (int)new CreditsController(_context).GetUserTotalCredit(UserId).Result.Value;
-                int withdrawals = (int)GetUserTotalWithdrawal(UserId).Result.Value;
+                int deposits = (int)new CreditsController(_context).GetUserTotalCredit(user.Id).Result.Value;
+                int withdrawals = (int)GetUserTotalWithdrawal(user.Id).Result.Value;
                 int balance = deposits - withdrawals;
-                return balance;
+                return "Withdrawal successful";
             }
             else
             {
-                return BadRequest();
+                return BadRequest("inavlid request details");
             }
         }
 

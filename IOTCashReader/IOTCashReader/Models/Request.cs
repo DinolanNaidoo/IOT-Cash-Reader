@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace IOTCashReader.Models
 {
-    
-    public class User
+    public class Request
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Code { get; set; }
-        public bool isAdmin { get; set; }
+        public virtual User User { get; set; }
+        public string Type { get; set; }
+        public double Amount { get; set; }
+        public bool isCompleted { get; set; }
+        public string Response { get; set; }
     }
 }

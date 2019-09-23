@@ -4,14 +4,16 @@ using IOTCashReader.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IOTCashReader.Migrations
 {
     [DbContext(typeof(ModelsContext))]
-    partial class ModelsContextModelSnapshot : ModelSnapshot
+    [Migration("20190916092109_updatesafetable")]
+    partial class updatesafetable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,6 +46,8 @@ namespace IOTCashReader.Migrations
 
                     b.Property<string>("Response");
 
+                    b.Property<int?>("SafeId");
+
                     b.Property<string>("Type");
 
                     b.Property<int?>("UserId");
@@ -51,6 +55,8 @@ namespace IOTCashReader.Migrations
                     b.Property<bool>("isCompleted");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SafeId");
 
                     b.HasIndex("UserId");
 
@@ -77,11 +83,15 @@ namespace IOTCashReader.Migrations
 
                     b.Property<string>("SerialNumber");
 
+                    b.Property<int?>("UserId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SerialNumber")
                         .IsUnique()
                         .HasFilter("[SerialNumber] IS NOT NULL");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Safe");
                 });
@@ -97,8 +107,6 @@ namespace IOTCashReader.Migrations
                     b.Property<string>("Password");
 
                     b.Property<string>("Username");
-
-                    b.Property<bool>("isAdmin");
 
                     b.HasKey("Id");
 
@@ -163,6 +171,17 @@ namespace IOTCashReader.Migrations
                 });
 
             modelBuilder.Entity("IOTCashReader.Models.Request", b =>
+                {
+                    b.HasOne("IOTCashReader.Models.Safe", "Safe")
+                        .WithMany()
+                        .HasForeignKey("SafeId");
+
+                    b.HasOne("IOTCashReader.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("IOTCashReader.Models.Safe", b =>
                 {
                     b.HasOne("IOTCashReader.Models.User", "User")
                         .WithMany()
