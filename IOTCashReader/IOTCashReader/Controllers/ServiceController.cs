@@ -235,17 +235,17 @@ namespace IOTCashReader.Controllers
                     }
                     else
                     {
-                        return NotFound("invalid request");
+                        return "error, invalid request";
                     }
                 }catch(Exception e)
                 {
                     e.GetBaseException();
-                    return NotFound("invalid request");
+                    return "an unexpected error occured";
                 }
             }
             else
             {
-                return NotFound("invalid request");
+                return "invalid request";
             }
         }
     }
