@@ -74,7 +74,7 @@ namespace IOTCashReader.Controllers
                                 User = user,
                                 Type = "Acitvation",
                                 isCompleted = true,
-                                Response = "Deposit successful"
+                                Response = "Activattion successful"
                             };
                             _context.Request.Add(request);
                         }
