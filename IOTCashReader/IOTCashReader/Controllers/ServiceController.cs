@@ -192,6 +192,13 @@ namespace IOTCashReader.Controllers
                     }
                     else
                     {
+                        if(request.Type == "Deactivation")
+                        {
+                            request.isCompleted = true;
+                            request.Response = "Deactivation successful";
+                            _context.Request.Update(request);
+                            _context.SaveChanges();
+                        }
                         request.User = user;
                     }
                     return request;
