@@ -17,5 +17,6 @@ namespace IOTCashReader.Models
         public double Amount { get; set; }
         public bool isCompleted { get; set; }
         public string Response { get; set; }
+        public string Counts { get; set; }
     }
 }
