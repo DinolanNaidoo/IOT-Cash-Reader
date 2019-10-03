@@ -55,6 +55,10 @@ namespace IOTCashReader.Controllers
                     if (reqId > 0)
                     {
                         request = _context.Request.Where(r => r.Id == reqId).FirstOrDefault<Request>();
+                        if (request.isCompleted)
+                        {
+                            return access;
+                        }
                         User user = _context.User.Where(u => u.Id == (_context.Request.Where(r => r.Id == request.Id).FirstOrDefault<Request>().User.Id)).FirstOrDefault<User>();
                         access.UserId = user.Id;
                         access.Granted = true;
@@ -160,7 +164,8 @@ namespace IOTCashReader.Controllers
                     Type = request.Type,
                     Amount = request.Amount,
                     isCompleted = false,
-                    Response = ""
+                    Response = "",
+                    Counts = request.Counts
                 };
                 _context.Request.Add(newRequest);
                 _context.SaveChanges();
@@ -192,6 +197,13 @@ namespace IOTCashReader.Controllers
                     }
                     else
                     {
+                        if(request.Type == "Deactivation")
+                        {
+                            request.isCompleted = true;
+                            request.Response = "Deactivation successful";
+                            _context.Request.Update(request);
+                            _context.SaveChanges();
+                        }
                         request.User = user;
                     }
                     return request;

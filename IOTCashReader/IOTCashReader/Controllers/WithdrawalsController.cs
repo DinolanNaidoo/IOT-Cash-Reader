@@ -120,7 +120,7 @@ namespace IOTCashReader.Controllers
 
         // POST: api/Withdrawals/MakeWithdrawal?serialnumber=serialnumber
         [HttpPost]
-        public async Task<ActionResult<string>> MakeWithdrawal(int reqId, [FromBody] Withdrawal withdrawal)
+        public async Task<ActionResult<string>> MakeWithdrawal(int reqId,string status,string counts, [FromBody] Withdrawal withdrawal)
         {
             if (ModelState.IsValid && withdrawal != null && reqId > 0 )
             {
@@ -142,17 +142,31 @@ namespace IOTCashReader.Controllers
                     Withdrawal = withdrawal,
                     User = user
                 };
-                request.Response = "Withdrawal successful";
+                if (status.Contains("E0"))
+                {
+                    request.Response = "Withdrawal successful";
+                }
+                else
+                {
+                    request.Response = "Withdrawal status: " + status;
+                }
+                int c100 = int.Parse(counts.ElementAt(0) + counts.ElementAt(1) + "");
+                int c50 = int.Parse(counts.ElementAt(2) + counts.ElementAt(3) + "");
+                Safe safe = _context.Safe.FirstOrDefault<Safe>();
+                safe.Bill100 = safe.Bill100 - c100;
+                safe.Bill50 = safe.Bill50 - c50;
                 request.isCompleted = true;
+                request.Counts = counts;
                 _context.Request.Update(request);
                 _context.Withdrawal.Add(withdrawal);
                 _context.UserWithdrawal.Add(userWithdrawal);
+                _context.Safe.Update(safe);
                 await _context.SaveChangesAsync();
 
                 int deposits = (int)new CreditsController(_context).GetUserTotalCredit(user.Id).Result.Value;
                 int withdrawals = (int)GetUserTotalWithdrawal(user.Id).Result.Value;
                 int balance = deposits - withdrawals;
-                return "Withdrawal successful";
+                return request.Response;
             }
             else
             {
