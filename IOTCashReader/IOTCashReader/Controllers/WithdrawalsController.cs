@@ -129,7 +129,7 @@ namespace IOTCashReader.Controllers
                 {
                     return NotFound("User not found");
                 }
-                User user = _context.User.Where(u => u.Id == request.Id).FirstOrDefault<User>();
+                User user = _context.User.Where(u => u.Id == _context.Request.Where(r => r.Id == request.Id).FirstOrDefault<Request>().User.Id).FirstOrDefault<User>();
                 if (user == null)
                 {
                     return NotFound("User not found");
@@ -155,6 +155,7 @@ namespace IOTCashReader.Controllers
                 Safe safe = _context.Safe.FirstOrDefault<Safe>();
                 safe.Bill100 = safe.Bill100 - c100;
                 safe.Bill50 = safe.Bill50 - c50;
+                withdrawal.Value = c100 * 100 + c50 * 50;
                 request.isCompleted = true;
                 request.Counts = counts;
                 _context.Request.Update(request);
@@ -170,7 +171,7 @@ namespace IOTCashReader.Controllers
             }
             else
             {
-                return BadRequest("inavlid request details");
+                return BadRequest("inavlid withdrawal request details");
             }
         }
 
