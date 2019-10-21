@@ -144,7 +144,32 @@ namespace IOTCashReader.Controllers
             }
         }
         [HttpPost]
-        public int MakeRequest(string username, [FromBody] Request request)
+        public async Task<ActionResult<string>> UpdateRequest([FromBody] Request request)
+        {
+            try
+            {
+                if(request == null)
+                {
+                    return "failed to update request";
+                }
+                Request dbRequest = _context.Request.Where(r => r.Id == request.Id).FirstOrDefault<Request>();
+                if (dbRequest != null)
+                {
+                    return "request not found";//still busy with another request
+                }
+                dbRequest.Response = request.Response;
+                _context.Request.Add(dbRequest);
+                _context.SaveChanges();
+                return "request updated";
+
+            }
+            catch (Exception e)
+            {
+                return "failed to update request, db error"; ;//an error occured
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult<int>> MakeRequest(string username, [FromBody] Request request)
         {
             try
             {
@@ -153,7 +178,7 @@ namespace IOTCashReader.Controllers
                 {
                     return -1;
                 }
-                Request tmpReq = _context.Request.Where(r => r.isCompleted == false && r.User.Id == user.Id).FirstOrDefault<Request>();
+                Request tmpReq = _context.Request.Where(r => r.isCompleted == false && (r.Response.Length == 0 || r.Response == "busy2")).FirstOrDefault<Request>();
                 if (tmpReq != null)
                 {
                     return 0;//still busy with another request
@@ -178,7 +203,47 @@ namespace IOTCashReader.Controllers
                 return -1;//an error occured
             }
         }
-        [HttpGet]
+        public async Task<ActionResult<int>> GetRequestID(int reqId)
+        {
+            try
+            {
+                Request request = _context.Request.Where(r => r.isCompleted == false).FirstOrDefault<Request>();
+                if (request == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return request.Id;
+                }
+
+            }
+            catch (Exception e)
+            {
+                return -1;
+            }
+        }
+        public async Task<ActionResult<string>> EndRequest(int reqId)
+        {
+            try
+            {
+                Request request = _context.Request.Where(r => r.Id == reqId).FirstOrDefault<Request>();
+                if(request == null)
+                {
+                    return "request not fount";
+                }
+                request.isCompleted = true;
+                request.Response = "Could not reach GSM";
+                _context.Request.Update(request);
+                _context.SaveChanges();
+                return "Request ended";
+
+            }catch(Exception e)
+            {
+                e.GetBaseException();
+                return "failed";
+            }
+        }
         public async Task<ActionResult<Request>> getRequest()
         {
             try
@@ -201,6 +266,12 @@ namespace IOTCashReader.Controllers
                         {
                             request.isCompleted = true;
                             request.Response = "Deactivation successful";
+                            _context.Request.Update(request);
+                            _context.SaveChanges();
+                        }else if(request.Type == "ClearPath" || request.Type == "OpenSafe" || request.Type == "LockSafe" || request.Type == "PrepareBag" || request.Type == "SealBag")
+                        {
+                            request.isCompleted = true;
+                            request.Response = "busy2";
                             _context.Request.Update(request);
                             _context.SaveChanges();
                         }
@@ -239,6 +310,10 @@ namespace IOTCashReader.Controllers
                         if (!request.isCompleted)
                         {
                             return "busy";
+                        }
+                        else if(request.isCompleted && request.Response == "busy2")
+                        {
+                            return "busy2";
                         }
                         else
                         {
