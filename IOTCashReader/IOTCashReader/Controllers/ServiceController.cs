@@ -149,10 +149,6 @@ namespace IOTCashReader.Controllers
         {
             try
             {
-                if(!type.Contains("s100") || !type.Contains("s50") || !type.Contains("s20") || !type.Contains("s10") )
-                {
-                    return "invalid request";
-                }
                 Safe safe = _context.Safe.FirstOrDefault<Safe>();
                 if(safe == null)
                 {
