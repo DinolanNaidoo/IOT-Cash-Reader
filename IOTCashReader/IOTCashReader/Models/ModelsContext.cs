@@ -22,5 +22,6 @@ namespace IOTCashReader.Models
         public virtual DbSet<UserWithdrawal> UserWithdrawal { get; set; }
         public virtual DbSet<Withdrawal> Withdrawal { get; set; }
         public virtual DbSet<Request> Request { get; set; }
+        public virtual DbSet<ActivityLog> ActivityLog { get; set; }
     }
 }

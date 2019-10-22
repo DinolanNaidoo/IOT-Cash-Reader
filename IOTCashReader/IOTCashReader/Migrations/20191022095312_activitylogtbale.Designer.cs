@@ -4,14 +4,16 @@ using IOTCashReader.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IOTCashReader.Migrations
 {
     [DbContext(typeof(ModelsContext))]
-    partial class ModelsContextModelSnapshot : ModelSnapshot
+    [Migration("20191022095312_activitylogtbale")]
+    partial class activitylogtbale
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,13 +21,13 @@ namespace IOTCashReader.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("IOTCashReader.Models.ActivityLog", b =>
+            modelBuilder.Entity("IOTCashReader.Models.Activity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Date");
+                    b.Property<DateTime>("DateTime");
 
                     b.Property<string>("Status");
 
@@ -33,7 +35,7 @@ namespace IOTCashReader.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityLog");
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("IOTCashReader.Models.Credit", b =>

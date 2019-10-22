@@ -157,6 +157,16 @@ namespace IOTCashReader.Controllers
                 {
                     return "request not found";//still busy with another request
                 }
+                if (dbRequest.Type == "PrepareBag" || dbRequest.Type == "SealBag" )
+                {
+                    ActivityLog activityLog = new ActivityLog()
+                    {
+                        Type = request.Type,
+                        Status = "failed, GSM server unreachable.",
+                        Date = DateTime.Now
+                    };
+                    _context.ActivityLog.Add(activityLog);
+                }
                 dbRequest.Response = request.Response;
                 _context.Request.Add(dbRequest);
                 _context.SaveChanges();
@@ -232,6 +242,16 @@ namespace IOTCashReader.Controllers
                 {
                     return "request not fount";
                 }
+                if (request.Type == "PrepareBag" || request.Type == "SealBag" || request.Type == "ClearPath" || request.Type == "UnlockSafe" || request.Type == "LockSafe")
+                {
+                    ActivityLog activityLog = new ActivityLog()
+                    {
+                        Type = request.Type,
+                        Status = "failed, GSM server unreachable.",
+                        Date = DateTime.Now
+                    };
+                    _context.ActivityLog.Add(activityLog);
+                }
                 request.isCompleted = true;
                 request.Response = "Could not reach GSM";
                 _context.Request.Update(request);
@@ -268,10 +288,16 @@ namespace IOTCashReader.Controllers
                             request.Response = "Deactivation successful";
                             _context.Request.Update(request);
                             _context.SaveChanges();
-                        } else if (request.Type == "ClearPath" || request.Type == "OpenSafe" || request.Type == "LockSafe")
+                        } else if (request.Type == "ClearPath" || request.Type == "UnlockSafe" || request.Type == "LockSafe")
                         {
                             request.isCompleted = true;
                             request.Response = "Request recieved succesffuly";
+                            ActivityLog activityLog = new ActivityLog() {
+                                Type = request.Type,
+                                Status = "Success",
+                                Date = DateTime.Now
+                            };
+                            _context.ActivityLog.Add(activityLog);
                             _context.Request.Update(request);
                             _context.SaveChanges();
                         }
@@ -302,6 +328,18 @@ namespace IOTCashReader.Controllers
                     Type = "N/A"
                 };
                 return request;
+            }
+        }
+        [HttpGet]
+        public async Task<ActionResult<List<ActivityLog>>> GetActivityLog()
+        {
+            try
+            {
+                return _context.ActivityLog.ToList<ActivityLog>();
+            }catch(Exception e)
+            {
+                e.GetBaseException();
+                return new List<ActivityLog>();
             }
         }
         [HttpGet]
