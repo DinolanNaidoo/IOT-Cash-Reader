@@ -143,6 +143,46 @@ namespace IOTCashReader.Controllers
                 return homeInfo;
             }
         }
+        
+        [HttpGet]
+        public async Task<ActionResult<string>> UpdateBills(string type, int count)
+        {
+            try
+            {
+                if(!type.Contains("s100") || !type.Contains("s50") || !type.Contains("s20") || !type.Contains("s10") )
+                {
+                    return "invalid request";
+                }
+                Safe safe = _context.Safe.FirstOrDefault<Safe>();
+                if(safe == null)
+                {
+                    return "no safe exists";
+                }
+                if (type.Equals("s100"))
+                {
+                    safe.Bill100 = count;
+                }else if (type.Equals("s50"))
+                {
+                    safe.Bill50 = count;
+                }
+                else if (type.Equals("s20"))
+                {
+                    safe.Bill20 = count;
+                }
+                else if (type.Equals("s10"))
+                {
+                    safe.Bill10 = count;
+                }
+                _context.Safe.Update(safe);
+                _context.SaveChanges();
+                return "update successful";
+            }
+            catch(Exception e)
+            {
+                e.GetBaseException();
+                return "an unexpected error occured, " + e.Message;
+            }
+        }
         [HttpPost]
         public async Task<ActionResult<string>> UpdateRequest([FromBody] Request request)
         {
