@@ -168,7 +168,7 @@ namespace IOTCashReader.Controllers
                     _context.ActivityLog.Add(activityLog);
                 }
                 dbRequest.Response = request.Response;
-                _context.Request.Add(dbRequest);
+                _context.Request.Update(dbRequest);
                 _context.SaveChanges();
                 return "request updated";
 
