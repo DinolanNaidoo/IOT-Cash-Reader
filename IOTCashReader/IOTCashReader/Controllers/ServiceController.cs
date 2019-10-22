@@ -153,7 +153,7 @@ namespace IOTCashReader.Controllers
                     return "failed to update request";
                 }
                 Request dbRequest = _context.Request.Where(r => r.Id == request.Id).FirstOrDefault<Request>();
-                if (dbRequest != null)
+                if (dbRequest == null)
                 {
                     return "request not found";//still busy with another request
                 }
@@ -252,7 +252,7 @@ namespace IOTCashReader.Controllers
                 if(request != null)
                 {
                     User user = _context.User.Where(u => u.Id == (_context.Request.Where(r => r.Id == request.Id).FirstOrDefault<Request>().User.Id)).FirstOrDefault<User>();
-                    if(user == null)
+                    if (user == null)
                     {
                         request.isCompleted = true;
                         request.Response = "User not found";
@@ -262,13 +262,20 @@ namespace IOTCashReader.Controllers
                     }
                     else
                     {
-                        if(request.Type == "Deactivation")
+                        if (request.Type == "Deactivation")
                         {
                             request.isCompleted = true;
                             request.Response = "Deactivation successful";
                             _context.Request.Update(request);
                             _context.SaveChanges();
-                        }else if(request.Type == "ClearPath" || request.Type == "OpenSafe" || request.Type == "LockSafe" || request.Type == "PrepareBag" || request.Type == "SealBag")
+                        } else if (request.Type == "ClearPath" || request.Type == "OpenSafe" || request.Type == "LockSafe")
+                        {
+                            request.isCompleted = true;
+                            request.Response = "Request recieved succesffuly";
+                            _context.Request.Update(request);
+                            _context.SaveChanges();
+                        }
+                        else if(request.Type == "PrepareBag" || request.Type == "SealBag")
                         {
                             request.isCompleted = true;
                             request.Response = "busy2";
