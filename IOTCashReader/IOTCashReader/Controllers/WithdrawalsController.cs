@@ -150,10 +150,19 @@ namespace IOTCashReader.Controllers
                 {
                     request.Response = "Withdrawal status: " + status;
                 }
-                string strV = "" + counts[0] + "" + counts[1];
+
+                string strV = "" + counts[0] + "" + counts[1]; 
                 int c100 = int.Parse(strV);
                 strV = "" + counts[2] + "" + counts[3];
                 int c50 = int.Parse(strV);
+                if(c100 + c50 <= 0)
+                {
+                    request.isCompleted = true;
+                    request.Counts = counts;
+                    _context.Request.Update(request);
+                    await _context.SaveChangesAsync();
+                    return request.Response;
+                }
                 Safe safe = _context.Safe.FirstOrDefault<Safe>();
                 safe.Bill100 = safe.Bill100 - c100;
                 safe.Bill50 = safe.Bill50 - c50;
