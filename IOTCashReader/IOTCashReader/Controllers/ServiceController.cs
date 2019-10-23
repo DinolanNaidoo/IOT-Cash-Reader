@@ -337,7 +337,7 @@ namespace IOTCashReader.Controllers
                             _context.Request.Update(request);
                             _context.SaveChanges();
                         }
-                        else if(request.Type == "PrepareBag" || request.Type == "SealBag")
+                        else if(request.Type == "PrepareBag" || request.Type == "SealBag" || request.Type == "Withdrawal")
                         {
                             request.isCompleted = true;
                             request.Response = "busy2";

@@ -36,6 +36,21 @@ namespace IOTCashReader.Migrations
                     b.ToTable("ActivityLog");
                 });
 
+            modelBuilder.Entity("IOTCashReader.Models.Cashout", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<double>("Total");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cashout");
+                });
+
             modelBuilder.Entity("IOTCashReader.Models.Credit", b =>
                 {
                     b.Property<int>("Id")

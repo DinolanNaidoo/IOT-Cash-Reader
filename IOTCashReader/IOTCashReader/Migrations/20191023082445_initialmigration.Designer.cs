@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IOTCashReader.Migrations
 {
     [DbContext(typeof(ModelsContext))]
-    [Migration("20190916090249_requeststable")]
-    partial class requeststable
+    [Migration("20191023082445_initialmigration")]
+    partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,38 @@ namespace IOTCashReader.Migrations
                 .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("IOTCashReader.Models.ActivityLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<string>("Status");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActivityLog");
+                });
+
+            modelBuilder.Entity("IOTCashReader.Models.Cashout", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<double>("Total");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cashout");
+                });
 
             modelBuilder.Entity("IOTCashReader.Models.Credit", b =>
                 {
@@ -44,9 +76,9 @@ namespace IOTCashReader.Migrations
 
                     b.Property<double>("Amount");
 
-                    b.Property<string>("Response");
+                    b.Property<string>("Counts");
 
-                    b.Property<int?>("SafeId");
+                    b.Property<string>("Response");
 
                     b.Property<string>("Type");
 
@@ -55,8 +87,6 @@ namespace IOTCashReader.Migrations
                     b.Property<bool>("isCompleted");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SafeId");
 
                     b.HasIndex("UserId");
 
@@ -68,6 +98,8 @@ namespace IOTCashReader.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("AcceptorActive");
 
                     b.Property<int>("Bill10");
 
@@ -81,15 +113,11 @@ namespace IOTCashReader.Migrations
 
                     b.Property<string>("SerialNumber");
 
-                    b.Property<int?>("UserId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("SerialNumber")
                         .IsUnique()
                         .HasFilter("[SerialNumber] IS NOT NULL");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Safe");
                 });
@@ -105,6 +133,8 @@ namespace IOTCashReader.Migrations
                     b.Property<string>("Password");
 
                     b.Property<string>("Username");
+
+                    b.Property<bool>("isAdmin");
 
                     b.HasKey("Id");
 
@@ -169,17 +199,6 @@ namespace IOTCashReader.Migrations
                 });
 
             modelBuilder.Entity("IOTCashReader.Models.Request", b =>
-                {
-                    b.HasOne("IOTCashReader.Models.Safe", "Safe")
-                        .WithMany()
-                        .HasForeignKey("SafeId");
-
-                    b.HasOne("IOTCashReader.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("IOTCashReader.Models.Safe", b =>
                 {
                     b.HasOne("IOTCashReader.Models.User", "User")
                         .WithMany()
